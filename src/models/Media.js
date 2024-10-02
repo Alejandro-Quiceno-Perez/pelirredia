@@ -1,6 +1,6 @@
-//const { Schema, model } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-/*const MediaSchema = Schema({
+const MediaSchema = Schema({
     serial: {
         type: String,
         unique: true,
@@ -57,6 +57,6 @@
         ref: 'Tipo',
         required: true
     }
-}); */
+}); 
 
-// module.exports = model('Media', MediaSchema);
+module.exports = model('Media', MediaSchema);

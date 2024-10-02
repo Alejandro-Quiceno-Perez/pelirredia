@@ -3,7 +3,7 @@ const MediaSchema = require('..//models/Media')
 const { validationResult, check } = require('express-validator')
 
 const router = Router();
-/*
+
 router.post('/media', [
     check('serial', 'invalid.serial').not().isEmpty(),
     check('titulo', 'invalid.titulo').not().isEmpty(),
@@ -127,6 +127,5 @@ router.put('/media/:id', [
         console.log(error);
         res.status(500).send('Ocurrió un error al actualizar el medio.');
     }
-});
-*/
+}); 
 module.exports = router;
