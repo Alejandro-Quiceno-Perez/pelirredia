@@ -10,12 +10,10 @@ const GeneroSchema = Schema({
               required: true
        },
        fechaCreacion: {
-              type: String,
-              required: true
+              type: String
        },
        fechaActualizacion: {
-              type: String,
-              required: true
+              type: String
        },
        descripcion: {
               type: String,

@@ -1,5 +1,6 @@
 const express = require('express');
 const GeneroSchema = require('../models/Genero');
+const Genero = require('../models/Genero');
 
 const router = express.Router();
 
@@ -57,5 +58,18 @@ router.delete('/generos/:id', async (req, res) => {
        }
 });
 
+// listar por ID
+router.get('/generos/:generoId', async function(req, res) {
+       try {
+              const genero = await Genero.findById(req.params.generoId);
+              if (!genero) {
+                     return res.status(404).send('Género no encontrado');
+              }
+              res.status(200).json(genero);
+       } catch (error) {
+              console.log(error.message);
+              res.status(500).send('Ocurrió un error');
+       }
+})
 
 module.exports = router;

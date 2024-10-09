@@ -27,7 +27,7 @@ router.get('/director', (req, res) => {
 router.get('/director/:id', (req, res) => {
        const { id } = req.params;
        DirectorSchema
-              .findByName(id)
+              .findById(id)
               .then((data) => res.json(data))
               .catch((error) => res.json({message: error}));
 })

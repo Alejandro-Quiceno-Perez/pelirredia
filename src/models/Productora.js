@@ -11,12 +11,11 @@ const ProductoraSchema = Schema({
         default: true
     },
     fechaCreacion: {
-        type: Date,
-        default: Date.now,
+        type: String,
         required: true
     },
     fechaActualizacion: {
-        type: Date,
+        type: String,
         default: Date.now
     },
     slogan: {

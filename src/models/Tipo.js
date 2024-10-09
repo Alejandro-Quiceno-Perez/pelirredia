@@ -5,10 +5,10 @@ const TipoSchema = Schema({
         required: true 
 
     },
-    fechaCreacion: { type: Date,
+    fechaCreacion: { type: String,
         required: true 
     },
-    fechaActualizacion: { type: Date,
+    fechaActualizacion: { type: String,
         required: true 
     },
     descripcion: { type: String,
