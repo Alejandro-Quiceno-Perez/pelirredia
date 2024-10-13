@@ -16,7 +16,6 @@ const ProductoraSchema = Schema({
     },
     fechaActualizacion: {
         type: String,
-        default: Date.now
     },
     slogan: {
         type: String,

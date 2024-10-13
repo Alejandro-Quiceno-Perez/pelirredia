@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const ProductoraSchema = require('../models/Productora');
 const { validationResult, check } = require('express-validator');
+const Productora = require('../models/Productora');
 
 const router = Router();
 
@@ -29,8 +30,8 @@ router.post('/productora', [
         let productora = new ProductoraSchema(); 
         productora.nombre = req.body.nombre; 
         productora.estado = req.body.estado;
-        productora.fechaCreacion = new Date();
-        productora.fechaActualizacion = new Date();
+        productora.fechaCreacion = req.body.fechaCreacion;
+        productora.fechaActualizacion = req.body.fechaActualizacion;
         productora.slogan = req.body.slogan || ''; 
         productora.descripcion = req.body.descripcion || '';
 
@@ -62,7 +63,8 @@ router.put('/productora/:id', [
 
         productora.nombre = req.body.nombre; 
         productora.estado = req.body.estado;
-        productora.fechaActualizacion = new Date();
+        productora.fechaCreacion = req.body.fechaCreacion;
+        productora.fechaActualizacion = req.body.fechaActualizacion;
         productora.slogan = req.body.slogan || productora.slogan; 
         productora.descripcion = req.body.descripcion || productora.descripcion; 
 
@@ -74,6 +76,23 @@ router.put('/productora/:id', [
         res.status(500).send('Ocurrió un error al actualizar la productora');
     }
 });
+
+// Listar por Id
+router.get('/productora/:id', (req,res) => {
+    const { id } = req.params;
+    ProductoraSchema
+        .findById(id)
+        .then((data) => res.json(data))
+        .catch((error) => res.json({message: error}));
+});
+
+router.delete('/productora/:id', (req,res) => {
+    const { id } = req.params;
+    ProductoraSchema
+        .deleteOne({ _id: id })
+        .then((data) => res.json(data))
+        .catch((error) => res.json({message: error}));
+})
 
 
 module.exports = router;

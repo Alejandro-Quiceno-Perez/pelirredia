@@ -36,8 +36,8 @@ router.post('/tipo', [
 
         let tipo = new Tipo();
         tipo.nombre = req.body.nombre;
-        tipo.fechaCreacion = new Date;
-        tipo.fechaActualizacion = new Date;
+        tipo.fechaCreacion = req.body.fechaCreacion;
+        tipo.fechaActualizacion = req.body.fechaActualizacion;
         tipo.descripcion = req.body.descripcion;
 
         tipo = await tipo.save();
@@ -70,7 +70,9 @@ router.put('/tipo/:id', [
         }
 
         tipo.nombre = req.body.nombre;
-        tipo.fechaActualizacion = new Date;
+        tipo.fechaCreacion = req.body.fechaCreacion;
+        tipo.fechaActualizacion = req.body.fechaActualizacion;
+        tipo.descripcion = req.body.descripcion;
 
         tipo = await tipo.save();
         res.send(tipo);
@@ -82,5 +84,32 @@ router.put('/tipo/:id', [
     }
 
 });
+
+router.delete('/tipo/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const tipo = await Tipo.findByIdAndDelete(id);
+        if (!tipo) {
+            return res.status(404).send({ message: 'Tipo no encontrado' });
+        }
+        res.status(200).send({ message: 'Tipo eliminado exitosamente'});
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+// bucar por id
+router.get('/tipo/:tipoId', async function (req, res) {
+    try {
+        const tipo = await Tipo.findById(req.params.tipoId);
+        if (!tipo) {
+            return res.status(404).send('Tipo no encontrado');
+        }
+        res.status(200).json(tipo)
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Ocurrió un error');
+    }
+})
 
 module.exports = router;

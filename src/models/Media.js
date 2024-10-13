@@ -8,12 +8,11 @@ const MediaSchema = Schema({
     },
     titulo: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
     sinopsis: {
         type: String,
-        trim: true
+        required: true
     },
     url: {
         type: String,
@@ -22,19 +21,17 @@ const MediaSchema = Schema({
     },
     imagenPortada: {
         type: String,
-        trim: true
+        required: true
     },
     fechaCreacion: {
-        type: Date,
-        default: Date.now,
+        type: String,
         required: true
     },
     fechaActualizacion: {
-        type: Date,
-        default: Date.now
+        type: String,
     },
     añoEstreno: {
-        type: Number,
+        type: String,
         required: true
     },
     generoPrincipal: {

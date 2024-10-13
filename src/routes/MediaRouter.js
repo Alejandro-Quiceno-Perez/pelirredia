@@ -18,7 +18,7 @@ router.post('/media', [
     check('productora', 'invalid.productora').not().isEmpty(),
     check('tipo', 'invalid.tipo').not().isEmpty(),
 
-], async function(req, res){
+], async function (req, res) {
 
     try {
 
@@ -38,8 +38,8 @@ router.post('/media', [
         media.sinopsis = req.body.sinopsis;
         media.url = req.body.url;
         media.imagenPortada = req.body.imagenPortada;
-        media.fechaCreacion = req.body.fechaCreacion || new Date();
-        media.fechaActualizacion = req.body.fechaActualizacion || new Date();
+        media.fechaCreacion = req.body.fechaCreacion;
+        media.fechaActualizacion = req.body.fechaActualizacion;
         media.añoEstreno = req.body.añoEstreno;
         media.generoPrincipal = req.body.generoPrincipal;
         media.directorPrincipal = req.body.directorPrincipal;
@@ -51,6 +51,19 @@ router.post('/media', [
 
     } catch (error) {
         console.log(error);
+        if (error.response) {
+            // El servidor respondió con un código de estado fuera del rango 2xx
+            console.error('Error response:', error.response.data);
+            console.error('Error status:', error.response.status);
+            console.error('Error headers:', error.response.headers);
+        } else if (error.request) {
+            // La solicitud fue hecha pero no se recibió respuesta
+            console.error('Error request:', error.request);
+        } else {
+            // Algo pasó al configurar la solicitud que desencadenó un error
+            console.error('Error message:', error.message);
+        }
+        console.error('Error config:', error.config);
         res.status(500).send('Ocurrió un error al crear el medio.');
     }
 });
@@ -62,7 +75,7 @@ router.get('/media', async function (req, res) {
                 path: 'generoPrincipal', select: 'nombre estado'
             },
             {
-                path: 'directorPrincipal', select: 'nombre estado'
+                path: 'directorPrincipal', select: 'nombres estado'
             },
             {
                 path: 'productora', select: 'nombre estado'
@@ -79,53 +92,95 @@ router.get('/media', async function (req, res) {
 });
 
 
-router.put('/media/:id', [
-    check('serial', 'El serial es obligatorio').not().isEmpty(),
-    check('titulo', 'El título es obligatorio').not().isEmpty(),
-    check('sinopsis', 'La sinopsis es obligatoria').not().isEmpty(),
-    check('url', 'La URL es obligatoria').not().isEmpty(),
-    check('imagenPortada', 'La imagen de portada es obligatoria').not().isEmpty(),
-    check('añoEstreno', 'El año de estreno es obligatorio').not().isEmpty(),
-    check('generoPrincipal', 'El género principal es obligatorio').not().isEmpty(),
-    check('directorPrincipal', 'El director principal es obligatorio').not().isEmpty(),
-    check('productora', 'La productora es obligatoria').not().isEmpty(),
-    check('tipo', 'El tipo es obligatorio').not().isEmpty(),
-], async function(req, res) {
+// router.put('/media/:id', [
+//     check('serial', 'El serial es obligatorio').not().isEmpty(),
+//     check('titulo', 'El título es obligatorio').not().isEmpty(),
+//     check('sinopsis', 'La sinopsis es obligatoria').not().isEmpty(),
+//     check('url', 'La URL es obligatoria').not().isEmpty(),
+//     check('imagenPortada', 'La imagen de portada es obligatoria').not().isEmpty(),
+//     check('añoEstreno', 'El año de estreno es obligatorio').not().isEmpty(),
+//     check('generoPrincipal', 'El género principal es obligatorio').not().isEmpty(),
+//     check('directorPrincipal', 'El director principal es obligatorio').not().isEmpty(),
+//     check('productora', 'La productora es obligatoria').not().isEmpty(),
+//     check('tipo', 'El tipo es obligatorio').not().isEmpty(),
+// ], async function (req, res) {
+//     try {
+
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({ mensaje: errors.array() });
+//         }
+
+//         let media = await MediaSchema.findById(req.params.mediaId);
+//         if (!media) {
+//             return res.status(400).send('El medio no existe');
+//         }
+
+//         const existeMediaPorSerial = await MediaSchema.findOne({ serial: req.body.serial, _id: { $ne: media._id } });
+//         if (existeMediaPorSerial) {
+//             return res.status(400).send('Ya existe otro medio con ese serial');
+//         }
+
+//         media.serial = req.body.serial;
+//         media.titulo = req.body.titulo;
+//         media.sinopsis = req.body.sinopsis;
+//         media.url = req.body.url;
+//         media.imagenPortada = req.body.imagenPortada;
+//         media.añoEstreno = req.body.añoEstreno;
+//         media.generoPrincipal = req.body.generoPrincipal._id;
+//         media.directorPrincipal = req.body.directorPrincipal._id;
+//         media.productora = req.body.productora._id;
+//         media.tipo = req.body.tipo._id;
+//         media.fechaActualizacion = req.params.fechaActualizacion;
+
+//         media = await media.save();
+//         res.send(media);
+
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send('Ocurrió un error al actualizar el medio.');
+//     }
+// });
+
+router.put('/media/:id', async (req, res) =>{
+    const {id} =req.params;
     try {
-
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ mensaje: errors.array() });
-        }
-
-        let media = await MediaSchema.findById(req.params.mediaId);
+        const media = await MediaSchema.findByIdAndUpdate(id, req.body, {
+            new: true, runValidators: true
+        });
         if (!media) {
-            return res.status(400).send('El medio no existe');
+            return res.status(404).send({ message: "Media no encontrado" });
         }
-
-        const existeMediaPorSerial = await MediaSchema.findOne({ serial: req.body.serial, _id: { $ne: media._id } });
-        if (existeMediaPorSerial) {
-            return res.status(400).send('Ya existe otro medio con ese serial');
-        }
-
-        media.serial = req.body.serial;
-        media.titulo = req.body.titulo;
-        media.sinopsis = req.body.sinopsis;
-        media.url = req.body.url;
-        media.imagenPortada = req.body.imagenPortada;
-        media.añoEstreno = req.body.añoEstreno;
-        media.generoPrincipal = req.body.generoPrincipal._id;
-        media.directorPrincipal = req.body.directorPrincipal._id;
-        media.productora = req.body.productora._id;
-        media.tipo = req.body.tipo._id;
-        media.fechaActualizacion = new Date();
-
-        media = await media.save();
-        res.send(media);
-
+        res.status(200).send(media);
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Ocurrió un error al actualizar el medio.');
+        res.status(400).send(error.message)
     }
-}); 
+})
+
+// Listar por id
+router.get('/media/:mediaId', async function (req, res) {
+    try {
+        const media = await MediaSchema.findById(req.params.mediaId);
+        if (!media) {
+            return res.status(404).send('Media no encontrado');
+        }
+        res.status(200).json(media);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Ocurrió un error');
+    }
+});
+
+router.delete('/media/:id', async (req,res) => {
+    const { id } = req.params;
+    try {
+        const media = await MediaSchema.findByIdAndDelete(id);
+        if (!media) {
+            return res.status(404).send({ message: 'Media no encontrado' });
+        }
+        res.status(200).send({ message: 'Media eliminado exitosamente' });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
 module.exports = router;
