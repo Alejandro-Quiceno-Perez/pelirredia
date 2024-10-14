@@ -13,6 +13,17 @@ const app = express();
 const port = process.env.PORT || 9000;
 
 
+const connectDb=async()=>{
+       try {
+              const database = await mongoose.connect(process.env.ACTIVIDAD2_IUD_ACTUALIZADA)
+              console.log('Conected mongoDB_Atlas',database.connection.name)
+       } catch (error) {
+              console.log(error);
+              
+       }
+}
+
+connectDb()
 
 
 // middelware
@@ -31,10 +42,10 @@ app.get('/', (req, res) => {
        res.send('Hello World');
 })
 
-//mongo db conection 
-mongoose.connect(process.env.ACTIVIDAD2_IUD_ACTUALIZADA)
-       .then(() => console.log('Conected mongoDB_Atlas'))
-       .catch((error) => console.error(error.message));
+// //mongo db conection 
+// mongoose.connect(process.env.ACTIVIDAD2_IUD_ACTUALIZADA)
+//        .then(() => console.log('Conected mongoDB_Atlas'))
+//        .catch((error) => console.error(error.message));
 
 app.listen(port, () => console.log('Server Listening on port' , port));
 
