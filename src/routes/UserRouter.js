@@ -1,17 +1,20 @@
 const { Router } = require('express');
 const User = require('../models/User');
 const { validationResult, check } = require('express-validator');
+const  { validarJWT } = require('../middleware/validar-jwt');
 const bcrypt = require('bcrypt');
+const { validarRolAdmin } = require('../middleware/validar-rol-admin');
+
 
 const router = Router();
 
 // Crear un nuevo usuario
-router.post('/users', [
+router.post('/users',[validarJWT, validarRolAdmin], [
        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
        check('email', 'El email es obligatorio').isEmail(),
        check('password', 'La contraseña es obligatoria').not().isEmpty(),
        check('estado', 'El estado es inválido').isIn(['ACTIVO', 'INACTIVO']),
-       check('rol', 'El rol es inválido').isIn(['ADMIN', 'USER'])
+       check('rol', 'El rol es inválido').isIn(['ADMIN', 'DOCENTE'])
 ], async (req, res) => {
        try {
               const errors = validationResult(req);
@@ -48,7 +51,7 @@ router.post('/users', [
 });
 
 // Obtener todos los usuarios
-router.get('/users', async (req, res) => {
+router.get('/users', [validarJWT, validarRolAdmin], async (req, res) => {
        try {
               const users = await User.find();
               res.status(200).json(users);
@@ -73,12 +76,12 @@ router.get('/users/:userId', async (req, res) => {
 });
 
 // Actualizar un usuario
-router.put('/users/:userId', [
+router.put('/users/:userId',[validarJWT, validarRolAdmin], [
        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
        check('email', 'El email es obligatorio').isEmail(),
        check('password', 'La contraseña es obligatoria').not().isEmpty(),
        check('estado', 'El estado es inválido').isIn(['ACTIVO', 'INACTIVO']),
-       check('rol', 'El rol es inválido').isIn(['ADMIN', 'USER'])
+       check('rol', 'El rol es inválido').isIn(['ADMIN', 'DOCENTE'])
 ], async (req, res) => {
        try {
               const errors = validationResult(req);

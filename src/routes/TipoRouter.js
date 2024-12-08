@@ -1,13 +1,15 @@
 const { Router } = require('express');
 const Tipo = require('../models/Tipo');
 const { validationResult, check } = require('express-validator');
+const  { validarJWT } = require('../middleware/validar-jwt');
+const { validarRolAdmin } = require('../middleware/validar-rol-admin');
 
 const router = Router();
 
 //LISTAR, CREAR Y ACTUALIZAR, ELIMINAR
 
 // GET method route
-router.get('/tipo', async function (req, res) {
+router.get('/tipo', [validarJWT, validarRolAdmin], async function (req, res) {
 
     try {
 
@@ -22,7 +24,7 @@ router.get('/tipo', async function (req, res) {
 });
 
 // POST method route
-router.post('/tipo', [
+router.post('/tipo', [validarJWT, validarRolAdmin], [
     check('nombre', 'invalid.nombre').not().isEmpty(),
     check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
 ], async function (req, res) {
@@ -52,7 +54,7 @@ router.post('/tipo', [
 });
 
 // PUT method route
-router.put('/tipo/:id', [
+router.put('/tipo/:id', [validarJWT, validarRolAdmin], [
     check('nombre', 'invalid.nombre').not().isEmpty(),
 ], async function (req, res) {
 

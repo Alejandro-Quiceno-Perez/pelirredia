@@ -1,10 +1,12 @@
 const express = require('express');
 const DirectorSchema = require('../models/Director');
+const  { validarJWT } = require('../middleware/validar-jwt');
+const { validarRolAdmin } = require('../middleware/validar-rol-admin');
 
 const router = express.Router();
 
 //Crear usuario
-router.post('/director', (req, res) => {
+router.post('/director', [validarJWT,validarRolAdmin], (req, res) => {
        const director = DirectorSchema(req.body);
        director
               .save()
@@ -14,7 +16,7 @@ router.post('/director', (req, res) => {
 
 //Obtener todos los usuarios 
 // GET method route
-router.get('/director', (req, res) => {
+router.get('/director', [validarJWT, validarRolAdmin], (req, res) => {
        DirectorSchema
               .find()
               .then((data) => res.json(data))
@@ -34,7 +36,7 @@ router.get('/director/:id', (req, res) => {
 
 
 // Actualizar Director
-router.put('/director/:id', (req, res) => {
+router.put('/director/:id', [validarJWT, validarRolAdmin], (req, res) => {
        const { id } = req.params;
        const { nombres, estado, fechaCreacion, fechaActualizacion } = req.body;
 

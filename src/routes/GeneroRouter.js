@@ -1,11 +1,13 @@
 const express = require('express');
 const GeneroSchema = require('../models/Genero');
 const Genero = require('../models/Genero');
+const { validarJWT } = require('../middleware/validar-jwt');
+const { validarRolAdmin } = require('../middleware/validar-rol-admin');
 
 const router = express.Router();
 
 //Crear genero
-router.post('/generos', async (req, res) => {
+router.post('/generos', [validarJWT, validarRolAdmin], async (req, res) => {
        try {
               const genero = GeneroSchema(req.body);
               await genero.save();
@@ -17,7 +19,7 @@ router.post('/generos', async (req, res) => {
 });
 
 // Buscar
-router.get('/generos', async (req, res) => {
+router.get('/generos', [validarJWT, validarRolAdmin], async (req, res) => {
        try {
               const generos = await GeneroSchema.find({})
               res.status(200).send(generos);
@@ -28,7 +30,7 @@ router.get('/generos', async (req, res) => {
 
 // Actualizar
 
-router.put('/generos/:id', async (req, res) => {
+router.put('/generos/:id', [validarJWT, validarRolAdmin], async (req, res) => {
        const { id } = req.params;
        try {
               const genero = await GeneroSchema.findByIdAndUpdate(id, req.body, {

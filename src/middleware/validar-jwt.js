@@ -8,7 +8,7 @@ const validarJWT = (req,res,next) => {
 
     try{
 
-        const payload = JWT.verify(token, '123456');
+        const payload = jwt.verify(token, '123456');
         req.payload = payload
         next();
 

@@ -2,11 +2,13 @@ const { Router } = require('express');
 const ProductoraSchema = require('../models/Productora');
 const { validationResult, check } = require('express-validator');
 const Productora = require('../models/Productora');
+const { validarJWT } = require('../middleware/validar-jwt');
+const { validarRolAdmin } = require('../middleware/validar-rol-admin');
 
 const router = Router();
 
 // GET method route
-router.get('/productora', async function (req, res) {
+router.get('/productora', [validarJWT, validarRolAdmin], async function (req, res) {
     try {
         const productoras = await ProductoraSchema.find(); // select * from productoras
         res.send(productoras);
@@ -17,7 +19,7 @@ router.get('/productora', async function (req, res) {
 });
 
 // POST method route
-router.post('/productora', [
+router.post('/productora', [validarJWT, validarRolAdmin], [
     check('nombre', 'El nombre es obligatorio').not().isEmpty()
 ], async function (req, res) {
 
@@ -46,7 +48,7 @@ router.post('/productora', [
 
 
 // PUT method route
-router.put('/productora/:id', [
+router.put('/productora/:id', [validarJWT, validarRolAdmin], [
     check('nombre', 'El nombre es obligatorio').not().isEmpty()
 ], async function (req, res) {
 

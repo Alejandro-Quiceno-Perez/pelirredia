@@ -7,7 +7,7 @@ const UserSchema = new Schema({
        fechaCreacion : { type: Date, default: Date.now },
        fechaActualizacion : { type: Date, default: Date.now },
        estado : { type: String, required: true, enum:['ACTIVO', 'INACTIVO']},
-       rol: { type: String, required: true, enum:['ADMIN', 'USER']}
+       rol: { type: String, required: true, enum:['ADMIN', 'DOCENTE']}
 });
 
 module.exports = model('User', UserSchema);

@@ -2,6 +2,7 @@ const { Router } = require('express');
 const User = require('../models/User');
 const { validationResult, check } = require('express-validator');
 const bcrypt = require('bcrypt');
+const { generarJWT } = require('../helper/jwt');
 
 const router = Router();
 
@@ -32,9 +33,9 @@ router.post('/login', [
 
               // Generamos el token
 
-              const token = generarJWT(user)
+              const token = generarJWT(existeUser)
               res.json({
-                     _id: existeUser._id, nobre: existeUser.nombre, email: existeUser.email, rol: existeUser.rol
+                     _id: existeUser._id, nobre: existeUser.nombre, rol: existeUser.rol, email: existeUser.email, access_token: token
               });
 
        } catch (error) {
