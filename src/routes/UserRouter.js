@@ -1,15 +1,24 @@
+/**
+ * Importa los módulos necesarios.
+ */
 const { Router } = require('express');
 const User = require('../models/User');
 const { validationResult, check } = require('express-validator');
-const  { validarJWT } = require('../middleware/validar-jwt');
+const { validarJWT } = require('../middleware/validar-jwt');
 const bcrypt = require('bcrypt');
 const { validarRolAdmin } = require('../middleware/validar-rol-admin');
 
-
+/**
+ * Crea una instancia del enrutador de Express.
+ */
 const router = Router();
 
-// Crear un nuevo usuario
-router.post('/users',[validarJWT, validarRolAdmin], [
+/**
+ * @route POST /users
+ * @description Crea un nuevo usuario.
+ * @access Private (requiere autenticación y rol de administrador)
+ */
+router.post('/users', [validarJWT, validarRolAdmin], [
        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
        check('email', 'El email es obligatorio').isEmail(),
        check('password', 'La contraseña es obligatoria').not().isEmpty(),
@@ -50,7 +59,11 @@ router.post('/users',[validarJWT, validarRolAdmin], [
        }
 });
 
-// Obtener todos los usuarios
+/**
+ * @route GET /users
+ * @description Obtiene todos los usuarios.
+ * @access Private (requiere autenticación y rol de administrador)
+ */
 router.get('/users', [validarJWT, validarRolAdmin], async (req, res) => {
        try {
               const users = await User.find();
@@ -61,7 +74,11 @@ router.get('/users', [validarJWT, validarRolAdmin], async (req, res) => {
        }
 });
 
-// Obtener un usuario por ID
+/**
+ * @route GET /users/:userId
+ * @description Obtiene un usuario por ID.
+ * @access Public
+ */
 router.get('/users/:userId', async (req, res) => {
        try {
               const user = await User.findById(req.params.userId);
@@ -75,8 +92,12 @@ router.get('/users/:userId', async (req, res) => {
        }
 });
 
-// Actualizar un usuario
-router.put('/users/:userId',[validarJWT, validarRolAdmin], [
+/**
+ * @route PUT /users/:userId
+ * @description Actualiza un usuario por ID.
+ * @access Private (requiere autenticación y rol de administrador)
+ */
+router.put('/users/:userId', [validarJWT, validarRolAdmin], [
        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
        check('email', 'El email es obligatorio').isEmail(),
        check('password', 'La contraseña es obligatoria').not().isEmpty(),
@@ -109,7 +130,11 @@ router.put('/users/:userId',[validarJWT, validarRolAdmin], [
        }
 });
 
-// Eliminar un usuario
+/**
+ * @route DELETE /users/:userId
+ * @description Elimina un usuario por ID.
+ * @access Private (requiere autenticación y rol de administrador)
+ */
 router.delete('/users/:userId', async (req, res) => {
        try {
               const user = await User.findByIdAndDelete(req.params.userId);
@@ -122,4 +147,10 @@ router.delete('/users/:userId', async (req, res) => {
               res.status(500).json({ mensaje: "Ocurrió un error" });
        }
 });
+
+/**
+ * Exporta el enrutador.
+ * 
+ * @module UserRouter
+ */
 module.exports = router;
