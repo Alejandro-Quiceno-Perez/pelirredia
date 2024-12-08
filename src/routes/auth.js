@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const router = Router();
 
 // Crear un nuevo usuario
-router.post('/users', [
+router.post('/login', [
        check('email', 'El email es obligatorio').isEmail(),
        check('password', 'La contraseña es obligatoria').not().isEmpty()
 ], async (req, res) => {
@@ -16,15 +16,26 @@ router.post('/users', [
                      return res.status(400).json({ errors: errors.array() });
               }
 
+
+              // Validamos el Email
               const existeUser = await User.findOne({ email: req.body.email });
               if (!existeUser) {
                      return res.status(400).json({ mensaje: "El usuario ya existe" });
               }
 
-              const esIgual = await bcrypt.compareSync(req.body.password, user.password);
+              // Validamos contraseña
+              const esIgual = bcrypt.compareSync(req.body.password, existeUser.password);
               if (!esIgual) {
                      return res.status(400).json({ mensaje: "La contraseña es incorrecta" });
               }
+
+
+              // Generamos el token
+
+              const token = generarJWT(user)
+              res.json({
+                     _id: existeUser._id, nobre: existeUser.nombre, email: existeUser.email, rol: existeUser.rol
+              });
 
        } catch (error) {
               console.log(error.message);

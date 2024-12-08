@@ -33,8 +33,9 @@ app.use(express.json());
 app.use(cors({origin:"*"}));
 
 //Middleware
-app.use('/api', userRouter);
+
 app.use('/api', authRouter);
+app.use('/api', userRouter);
 app.use('/api', directorRouter);
 app.use('/api', generoRouter);
 app.use('/api', mediaRouter);
