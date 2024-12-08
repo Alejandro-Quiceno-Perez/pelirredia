@@ -1,0 +1,7 @@
+ADMIN
+lopez@example.com
+qwerty123
+
+DOCENTE
+DOCENTE@example.com
+qwerty123
